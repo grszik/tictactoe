@@ -113,9 +113,9 @@ int main() {
     } else if(!play) {
       DrawText("Tied", width/2-MeasureText("Tied", height*0.05)/2, height*0.05, height*0.05, YELLOW);
     } else if(turn) {
-      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, WHITE);
+      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
     } else {
-      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, WHITE);
+      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
     }
 
     int won = GetWinner(matrix);
@@ -149,6 +149,7 @@ int main() {
       if(IsKeyPressed(KEY_R)) {
         play = true;
         turn = false;
+        side = !side;
         win = 0;
         for(int i = 0; i<3; i++) {
           for(int j = 0; j<3; j++) {
