@@ -110,14 +110,16 @@ int main() {
     if(win != 0) {
       std::string str = win == 1 ? "o won" : "x won";
       DrawText(str.c_str(), width/2-MeasureText(str.c_str(), height*0.05)/2, height*0.05, height*0.05, GREEN);
+      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
     } else if(!play) {
       DrawText("Tied", width/2-MeasureText("Tied", height*0.05)/2, height*0.05, height*0.05, YELLOW);
+      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
     } else if(turn) {
       DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
-      DrawRectangleLines(1, 1, width-2, height-2, (side ? RED : GREEN));
+      DrawRectangleLines(10, 10, width-20, height-20, (side ? GREEN : RED));
     } else {
       DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
-      DrawRectangleLines(1, 1, width-2, height-2, (side ? GREEN : RED));
+      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
     }
 
     int won = GetWinner(matrix);
