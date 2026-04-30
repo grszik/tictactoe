@@ -4,6 +4,7 @@
 #include <sstream>
 
 bool side;
+bool multiplayer = true;
 std::string ip;
 bool between(int value, int min, int max) {
   return value > min && value < max;
@@ -53,7 +54,9 @@ int GetWinner(int matrix[3][3]) {
 }
 int setup() {
   int opt;
-  std::cout << "1. Host a game\n2. Join a game\n> ";
+  std::string up = exec("echo $(git diff)");
+  std::cout << up.length();
+  std::cout << "1. Host a game\n2. Join a game\n3. Singleplayer\n> ";
   std::cin >> opt;
   if(opt == 1) {
     side = false;
