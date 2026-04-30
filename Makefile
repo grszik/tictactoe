@@ -98,4 +98,4 @@ execute: $(target)
 
 # Clean up all relevant files
 clean:
-	$(RM) $(call platformpth, $(buildDir)/*)
+	# $(RM) $(call platformpth, $(buildDir)/*)
