@@ -71,6 +71,7 @@ int setup() {
     std::cout << "Server IP: ";
     std::cin >> ip;
     std::stringstream ss;
+    ss << "echo " << tmp << " | netcat -q0 " << ip << " 2137";
     
     std::cout << ss.str();
     std::string out = exec(ss.str());
@@ -177,7 +178,6 @@ int main() {
         if(matrix[clickX][clickY] == 0) {
           std::stringstream ss;
           ss << "echo " << clickX << clickY << " | netcat -q0 " << ip << " 2137";
-          std::cout << "you: " << ss.str() << "\n";
           std::string out = exec(ss.str());
           matrix[clickX][clickY] = turn+1;
           turn = !turn;
