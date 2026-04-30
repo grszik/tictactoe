@@ -114,8 +114,10 @@ int main() {
       DrawText("Tied", width/2-MeasureText("Tied", height*0.05)/2, height*0.05, height*0.05, YELLOW);
     } else if(turn) {
       DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
+      DrawRectangleLines(1, 1, width-2, height-2, (side ? RED : GREEN));
     } else {
       DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
+      DrawRectangleLines(1, 1, width-2, height-2, (side ? GREEN : RED));
     }
 
     int won = GetWinner(matrix);
@@ -146,7 +148,18 @@ int main() {
 
     EndDrawing();
     if(!play) {
-      if(IsKeyPressed(KEY_R)) {
+      if(IsKeyPressed(KEY_R) && !side) {
+        play = true;
+        turn = false;
+        side = !side;
+        win = 0;
+        for(int i = 0; i<3; i++) {
+          for(int j = 0; j<3; j++) {
+            matrix[i][j] = 0;
+          }
+        }
+      } else {
+        std::string out = exec("netcat -l -p 2137");
         play = true;
         turn = false;
         side = !side;
