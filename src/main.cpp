@@ -55,7 +55,7 @@ int GetWinner(int matrix[3][3]) {
 int setup() {
   int opt;
   std::string up = exec("echo $(git diff)");
-  std::cout << up.length();
+  if(up.length() > 1) std::cout << "[!] There may be a new version available. Try 'git pull'.\n";
   std::cout << "1. Host a game\n2. Join a game\n3. Singleplayer\n> ";
   std::cin >> opt;
   if(opt == 1) {
