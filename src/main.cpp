@@ -66,7 +66,7 @@ int setup() {
     std::cout << "Client joined! IP: " << out << "\n";
     ip = out;
     return 0;
-  } else {
+  } else if(opt == 2) {
     side = true;
     std::string tmp;
     std::cout << "Your IP: ";
@@ -78,6 +78,8 @@ int setup() {
     
     std::cout << ss.str();
     std::string out = exec(ss.str());
+  } else {
+    multiplayer = false;
   }
   return 0;
 }
@@ -110,16 +112,16 @@ int main() {
     if(win != 0) {
       std::string str = win == 1 ? "o won" : "x won";
       DrawText(str.c_str(), width/2-MeasureText(str.c_str(), height*0.05)/2, height*0.05, height*0.05, GREEN);
-      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
+      DrawRectangleLines(10, 10, width-20, height-20, (side && multiplayer ? RED : GREEN));
     } else if(!play) {
       DrawText("Tied", width/2-MeasureText("Tied", height*0.05)/2, height*0.05, height*0.05, YELLOW);
-      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
+      DrawRectangleLines(10, 10, width-20, height-20, (side && multiplayer ? RED : GREEN));
     } else if(turn) {
-      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
-      DrawRectangleLines(10, 10, width-20, height-20, (side ? GREEN : RED));
+      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side && multiplayer ? GREEN : RED));
+      DrawRectangleLines(10, 10, width-20, height-20, (side && multiplayer ? GREEN : RED));
     } else {
-      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
-      DrawRectangleLines(10, 10, width-20, height-20, (side ? RED : GREEN));
+      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side && multiplayer ? RED : (multiplayer ? GREEN : BLUE)));
+      DrawRectangleLines(10, 10, width-20, height-20, (side && multiplayer ? RED : (multiplayer ? GREEN : BLUE)));
     }
 
     int won = GetWinner(matrix);
@@ -154,10 +156,12 @@ int main() {
 
     EndDrawing();
     if(!play) {
-      if(IsKeyPressed(KEY_R) && !side) {
-        std::stringstream ss;
-        ss << "echo restart | netcat -q0 " << ip << " 2137";
-        std::string out = exec(ss.str());
+      if(IsKeyPressed(KEY_R) && (!side || !multiplayer)) {
+        if(multiplayer) {
+          std::stringstream ss;
+          ss << "echo restart | netcat -q0 " << ip << " 2137";
+          std::string out = exec(ss.str());
+        }
         play = true;
         turn = false;
         side = !side;
@@ -167,7 +171,7 @@ int main() {
             matrix[i][j] = 0;
           }
         }
-      } else if(side) {
+      } else if(side && multiplayer) {
         std::string out = exec("netcat -l -p 2137");
         play = true;
         turn = false;
@@ -182,7 +186,7 @@ int main() {
       continue;
     };
 
-    if(side == turn && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+    if((!multiplayer || side == turn) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
       Vector2 pos = GetMousePosition();
       if(between(pos.x, x, x+line) && between(pos.y, y, y+line)) {
         int clickX = 2, clickY = 2;
@@ -198,14 +202,16 @@ int main() {
         }
 
         if(matrix[clickX][clickY] == 0) {
-          std::stringstream ss;
-          ss << "echo " << clickX << clickY << " | netcat -q0 " << ip << " 2137";
-          std::string out = exec(ss.str());
+          if(multiplayer) {
+            std::stringstream ss;
+            ss << "echo " << clickX << clickY << " | netcat -q0 " << ip << " 2137";
+            std::string out = exec(ss.str());
+          }
           matrix[clickX][clickY] = turn+1;
           turn = !turn;
         }  
       }
-    } else if(side != turn) {
+    } else if(side != turn && multiplayer) {
       std::string out = exec("netcat -l -p 2137");
       int clickX = out[0] - '0';
       int clickY = out[1] - '0';
