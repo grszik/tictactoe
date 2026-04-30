@@ -148,6 +148,9 @@ int main() {
     EndDrawing();
     if(!play) {
       if(IsKeyPressed(KEY_R) && !side) {
+        std::stringstream ss;
+        ss << "echo restart | netcat -q0 " << ip << " 2137";
+        std::string out = exec(ss.str());
         play = true;
         turn = false;
         side = !side;
