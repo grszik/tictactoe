@@ -80,10 +80,7 @@ int setup() {
 }
 
 int main() {
-  if(setup() != 0) {
-    std::cout << "Unknwon exception!\n";
-    return 1;
-  }
+  setup();
   InitWindow(800, 700, "Kolko i Krzyzyk");
   SetTargetFPS(15);
   
@@ -160,7 +157,7 @@ int main() {
             matrix[i][j] = 0;
           }
         }
-      } else {
+      } else if(side) {
         std::string out = exec("netcat -l -p 2137");
         play = true;
         turn = false;
