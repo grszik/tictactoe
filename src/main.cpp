@@ -145,7 +145,18 @@ int main() {
     }
 
     EndDrawing();
-    if(!play) continue;
+    if(!play) {
+      if(IsKeyPressed(KEY_R)) {
+        play = true;
+        turn = false;
+        for(int i = 0; i<3; i++) {
+          for(int j = 0; j<3; j++) {
+            matrix[i][j] = 0;
+          }
+        }
+      }
+      continue;
+    };
 
     if(side == turn && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
       Vector2 pos = GetMousePosition();
