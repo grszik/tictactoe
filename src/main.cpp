@@ -120,10 +120,12 @@ int main() {
     }
 
     int won = GetWinner(matrix);
-    if(won != 0) {
+    if(won != 0 && win == 0) {
       win = won;
-      if(play) SetTargetFPS(15);
+      SetTargetFPS(15);
       play = false;
+      EndDrawing();
+      continue;
     }
     
     bool stop = true;
@@ -143,6 +145,8 @@ int main() {
     if(play && stop) {
       SetTargetFPS(15);
       play = false;
+      EndDrawing();
+      continue;
     }
 
     EndDrawing();
