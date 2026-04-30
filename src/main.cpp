@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <sstream>
 
+bool side;
+std::string ip;
 bool between(int value, int min, int max) {
   return value > min && value < max;
 }
@@ -54,22 +56,23 @@ int setup() {
   std::cout << "1. Host a game\n2. Join a game\n> ";
   std::cin >> opt;
   if(opt == 1) {
+    side = false;
     std::cout << "Waiting for client\n";
     std::string out = exec("netcat -l -p 2137");
-    if(out == "join\n") {
-      std::cout << "Client joined!\n";
-      return 0;
-    } else {
-      return 1;
-    }
+    out.pop_back();
+    std::cout << "Client joined! IP: " << out << "\n";
+    ip = out;
+    return 0;
   } else {
+    side = true;
     std::string tmp;
-    std::stringstream ss;
-    ss << "echo join | netcat -q0 ";
-    std::cout << "IP: ";
+    std::cout << "Your IP: ";
     std::cin >> tmp;
-    ss << tmp;
-    ss << " 2137";
+    std::cout << "Server IP: ";
+    std::cin >> ip;
+    std::stringstream ss;
+    ss << "echo " << tmp << " | netcat -q0 " << ip << " 2137";
+    
     std::cout << ss.str();
     std::string out = exec(ss.str());
   }
@@ -144,7 +147,7 @@ int main() {
     EndDrawing();
     if(!play) continue;
 
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+    if(side == turn && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
       Vector2 pos = GetMousePosition();
       if(between(pos.x, x, x+line) && between(pos.y, y, y+line)) {
         int clickX = 2, clickY = 2;
@@ -160,10 +163,21 @@ int main() {
         }
 
         if(matrix[clickX][clickY] == 0) {
+          std::stringstream ss;
+          ss << "echo " << clickX << clickY << " | netcat -q0 " << ip << " 2137";
+          std::cout << "you: " << ss.str() << "\n";
+          std::string out = exec(ss.str());
           matrix[clickX][clickY] = turn+1;
           turn = !turn;
         }  
       }
+    } else if(side != turn) {
+      std::string out = exec("netcat -l -p 2137");
+      int clickX = out[0] - '0';
+      int clickY = out[1] - '0';
+
+      matrix[clickX][clickY] = turn+1;
+      turn = !turn;
     }
   }
   CloseWindow();
