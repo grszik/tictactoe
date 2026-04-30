@@ -113,9 +113,9 @@ int main() {
     } else if(!play) {
       DrawText("Tied", width/2-MeasureText("Tied", height*0.05)/2, height*0.05, height*0.05, YELLOW);
     } else if(turn) {
-      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
+      DrawText("Turn: x", width/2-MeasureText("Turn: x", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
     } else {
-      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? GREEN : RED));
+      DrawText("Turn: o", width/2-MeasureText("Turn: o", height*0.05)/2, height*0.05, height*0.05, (side ? RED : GREEN));
     }
 
     int won = GetWinner(matrix);
